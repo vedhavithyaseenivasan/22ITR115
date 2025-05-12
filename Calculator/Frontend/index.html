@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Average Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f9;
+    }
+    .container {
+      text-align: center;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    pre {
+      text-align: left;
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Average Calculator</h1>
+    <div>
+      <button onclick="setNumberId('e')">Even Numbers</button>
+      <button onclick="setNumberId('p')">Prime Numbers</button>
+      <button onclick="setNumberId('f')">Fibonacci Numbers</button>
+      <button onclick="setNumberId('r')">Random Numbers</button>
+    </div>
+    <button onclick="fetchNumbers()">Get Numbers</button>
+
+    <div id="result" style="display: none;">
+      <h2>Previous State</h2>
+      <pre id="windowPrevState"></pre>
+      <h2>Current State</h2>
+      <pre id="windowCurrState"></pre>
+      <h2>Numbers</h2>
+      <pre id="numbers"></pre>
+      <h2>Average</h2>
+      <pre id="average"></pre>
+    </div>
+  </div>
+
+  <script>
+    let numberId = 'e';
+    const resultDiv = document.getElementById('result');
+    const windowPrevStateDiv = document.getElementById('windowPrevState');
+    const windowCurrStateDiv = document.getElementById('windowCurrState');
+    const numbersDiv = document.getElementById('numbers');
+    const averageDiv = document.getElementById('average');
+
+    function setNumberId(id) {
+      numberId = id;
+    }
+
+    async function fetchNumbers() {
+      try {
+        const response = await fetch(`http://localhost:9876/numbers/${numberId}`);
+        const data = await response.json();
+
+        // Show results
+        windowPrevStateDiv.textContent = JSON.stringify(data.windowPrevState, null, 2);
+        windowCurrStateDiv.textContent = JSON.stringify(data.windowCurrState, null, 2);
+        numbersDiv.textContent = JSON.stringify(data.numbers, null, 2);
+        averageDiv.textContent = data.avg;
+
+        resultDiv.style.display = 'block';
+      } catch (error) {
+        console.error('Error fetching numbers:', error);
+      }
+    }
+  </script>
+
+</body>
+</html>
